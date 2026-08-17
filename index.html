@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundry Local Summarizer</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; line-height: 1.5; color: #111; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #fafafa; }
+        textarea, input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; margin-top: 6px; }
+        button { background: #2563eb; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; }
+        button:disabled { background: #93c5fd; cursor: not-allowed; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: bold; background: #e2e8f0; }
+        .result-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin-top: 12px; white-space: pre-wrap; }
+        label { font-weight: bold; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <h2>Foundry Local Summarizer</h2>
+
+    <!-- Model Status -->
+    <div class="card">
+        <label>Model Status:</label>
+        <span id="statusBadge" class="status-badge">Checking...</span>
+        <div style="margin-top: 10px;">
+            <button id="initBtn" onclick="initializeModel()">Initialize Model</button>
+        </div>
+    </div>
+
+    <!-- Summarization Form -->
+    <div class="card">
+        <form id="summarizeForm" onsubmit="handleSummarize(event)">
+            <p>
+                <label>System Prompt:</label>
+                <input type="text" id="systemPrompt" value="Summarize the following document into concise bullet points. Focus on key ideas under 1000 characters.">
+            </p>
+
+            <p>
+                <label>Option A: Paste Text</label>
+                <textarea id="textInput" rows="5" placeholder="Paste your text here..."></textarea>
+            </p>
+
+            <p>
+                <label>Option B: Upload `.txt` File(s)</label><br>
+                <input type="file" id="fileInput" accept=".txt" multiple style="margin-top: 6px;">
+            </p>
+
+            <button type="submit" id="submitBtn" disabled>Summarize</button>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results"></div>
+
+    <script>
+        let isReady = false;
+
+        async function checkStatus() {
+            try {
+                const res = await fetch('/api/status');
+                const data = await res.json();
+                document.getElementById('statusBadge').innerText = data.status;
+                isReady = data.ready;
+                document.getElementById('submitBtn').disabled = !isReady;
+                document.getElementById('initBtn').disabled = data.loading || data.ready;
+            } catch (err) {
+                document.getElementById('statusBadge').innerText = 'Server unreachable';
+            }
+        }
+
+        async function initializeModel() {
+            document.getElementById('initBtn').disabled = true;
+            document.getElementById('statusBadge').innerText = 'Starting...';
+            await fetch('/api/init', { method: 'POST' });
+        }
+
+        async function handleSummarize(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const resultsDiv = document.getElementById('results');
+            
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Summarizing...';
+            resultsDiv.innerHTML = '<em>Processing request...</em>';
+
+            const formData = new FormData();
+            formData.append('systemPrompt', document.getElementById('systemPrompt').value);
+            formData.append('textInput', document.getElementById('textInput').value);
+
+            const fileInput = document.getElementById('fileInput');
+            for (const file of fileInput.files) {
+                formData.append('files', file);
+            }
+
+            try {
+                const res = await fetch('/api/summarize', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    resultsDiv.innerHTML = `<p style="color: red;">${data.error}</p>`;
+                } else {
+                    resultsDiv.innerHTML = '<h3>Summaries</h3>';
+                    data.results.forEach(item => {
+                        resultsDiv.innerHTML += `
+                            <div class="result-box">
+                                <strong>--- ${item.filename} ---</strong>
+                                <p>${item.summary || item.error}</p>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) {
+                resultsDiv.innerHTML = `<p style="color: red;">Failed to generate summary.</p>`;
+            } finally {
+                submitBtn.disabled = !isReady;
+                submitBtn.innerText = 'Summarize';
+            }
+        }
+
+        // Poll status every 2 seconds until model is ready
+        setInterval(() => {
+            if (!isReady) checkStatus();
+        }, 2000);
+        checkStatus();
+    </script>
+</body>
+</html>
