@@ -2,14 +2,14 @@ Some prerequisites are needed before getting the files running, namely Node.js (
 
 First, visit https://nodejs.org to get Node.js working.
 
-Then, run the following code into Powershell to get Express and multer running:
-[npm install express multer]
-
 Visit https://foundrylocal.ai to download the Foundry Local SDK. Take note to download the Javascript version of the package.
 
 Once everything is set up, copy or clone the files from this repository and put it into a local folder of your choice. 
 
-When in PowerShell, cd (move) into said new folder and spin up the server using the command:
+When in PowerShell, cd (move) into said new folder run the following command to get Express and multer running:
+[npm install express multer]
+
+Then, spin up the server using the command:
 [node server.js]
 
 Now visit http://localhost:3000/ in your browser and you should be good to go!
