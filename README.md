@@ -1,8 +1,8 @@
 Some prerequisites are needed before getting the files running, namely Node.js (Javascript runtime), Express (lets you spin up a server), multer (lets you upload files into said server), and the Foundry Local SDK.
 
-First, visit https://nodejs.org to get Node.js working.
+First, visit https://nodejs.org to get Node.js working. I recommend downloading the prebuilt Node.js package (the .msi file if you are using Windows) for ease of installation.
 
-Visit https://foundrylocal.ai to download the Foundry Local SDK. Take note to download the Javascript version of the package.
+Visit https://foundrylocal.ai to download the Foundry Local SDK via Powershell. Take note to download the Javascript version of the package.
 
 Once everything is set up, copy or clone the files from this repository and put it into a local folder of your choice. 
 
