@@ -18,4 +18,6 @@ Note: remember to keep the PowerShell terminal opened or your server will be shu
 
 Note 2: Foundry Local will need an active internet connection when first initializing the Qwen model to download the model into your local machine. It will be able to work fully offline on subsequent spin-ups.
 
+Note 3: September 21st, 2026 - a Foundry Local SDK update from version 1.2.4 to 2.0.1 may cause an error when initializing the model. Use the command [npm rebuild foundry-local-sdk] for a possible fix.
+
 Contact me if you have any inquiries on Foundry Local: greg@my-ian.com
