@@ -20,6 +20,11 @@ Note 2: Foundry Local will need an active internet connection when first initial
 
 Note 3: September 21st, 2026 - a Foundry Local SDK update from version 1.2.4 to 2.0.1 may cause an error when initializing the model. Use the command [npm rebuild foundry-local-sdk] for a possible fix.
 
-Note 4: Doublecheck that the Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022 (x64) package is already installed in your environment. While it isn't explicitly listed as a prerequisite in the Foundry Local documentation, it is required for the Foundry Local SDK to run. It is also possible to have been automatically installed as a prerequisite for one of your other apps. (Credits to Kho for figuring this out: https://www.linkedin.com/in/lien-chieh-kho-95059a20a/)
+Note 4: Doublecheck that the Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022 (x64) package is already installed in your environment. 
+
+Link to download: https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170&utm
+
+While it isn't explicitly listed as a prerequisite in the Foundry Local documentation, it is required for the Foundry Local SDK to run. It is also possible to have been automatically installed as a prerequisite for one of your other apps. 
+(Credits to Kho for figuring this out: https://www.linkedin.com/in/lien-chieh-kho-95059a20a/)
 
 Contact me if you have any inquiries on Foundry Local: greg@my-ian.com, https://www.linkedin.com/in/gregoriusjeasenridzal/
